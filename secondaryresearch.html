@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>SPH4UE-A</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+        rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">Physics Personal Project</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/header.png')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="post-heading">
+                        <h1>Secondary Research</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted on October 25, 2021
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Post Content-->
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-xl-10 col-xl-8 col-xl-7">
+
+                    <div>
+                        <p> Roughly speaking, there are four stages that our engine loops through to simulate
+                            two-dimensional physics. The procedure is as follows: </p>
+                        <ol>
+                            <li> Contact Detection </li>
+                            <li> Contact Resolution </li>
+                            <li> Force Computation </li>
+                            <li> State Integration </li>
+                        </ol>
+                        <p> Then, each frame of our physics engine renders the updated results. We will dive further
+                            into
+                            each stage, but first, we need to review vectors as they're crucial to understanding and
+                            implementing a physics engine. </p>
+                    </div>
+
+
+                    <div>
+                        <h2 class="section-heading">Vectors</h2>
+                        <p> A vector is an object that has both a <u><b>magnitude</b></u> and a <u><b>direction</b></u>.
+                            Intuitively,
+                            we can represent
+                            this object with an arrow, with the length representing the magnitude and the direction the
+                            arrow is pointing indicating the direction.</p>
+                        <img class="img-fluid" src="assets/img/vector.png" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p>We can denote a two-dimensional vector like&nbsp \(\overrightarrow{a} = (a_{x}, a_{y})\).
+                            If this vector is represented in the Cartesian coordinate system, this notation means that
+                            the tail of the vector is at the origin \((0, 0)\), and the head is at the point \((a_{x},
+                            a_{y})\). For example, if we have&nbsp \(\overrightarrow{a} = (4, 2)\), it corresponds to
+                            this vector: </p>
+                        <img class="img-fluid" src="assets/img/examplevector.png" alt="..."
+                            style="display: block; margin: 0 auto; width: 40%; height: 40%;" />
+                        <span class="caption text-muted">Image Credit: Khan Academy</span>
+                        <p> We can also perform algebraic operations on vectors. Firstly, the <u><b>length</b></u> of a
+                            vector,
+                            denoted by \(||\)&nbsp\(||\), can be calculated using the Pythagorean theorem. More
+                            formally, </p>
+                        <p style="text-align: center;"> \(||\)&nbsp\(\overrightarrow{a}\)&nbsp\(||\) = \(\sqrt{a_{x}^{2}
+                            + a_{y}^{2}}\)</p>
+                        <p> When a vector is <u><b>negated</u></b>, its magnitude remains the same, but its direction
+                            reverses. If&nbsp \(\overrightarrow{a} = (a_{x}, a_{y})\), the negation of&nbsp
+                            \(\overrightarrow{a}\)&nbsp is:</p>
+                        <p style="text-align: center;"> \(-\overrightarrow{a} = (-a_{x}, -a_{y})\)</p>
+                        <p> You will see why this is useful soon. We can also <u><b>add</b></u> two vectors together.
+                        </p>
+                        <p style="text-align: center;"> \(\overrightarrow{a} + \overrightarrow{b} = (a_{x} + b_{x},
+                            a_{y} + b_{y})\) </p>
+                        <p> The application of negating a vector becomes immediately obvious. Subtracting two
+                            vectors&nbsp\(\overrightarrow{a}\)&nbsp and &nbsp\(\overrightarrow{b}\)&nbsp is identical to
+                            adding &nbsp\(\overrightarrow{a}\)&nbsp and &nbsp\(-\overrightarrow{b}\)&nbsp. More
+                            formally,
+                        </p>
+                        <p style="text-align: center;"> \(\overrightarrow{a} - \overrightarrow{b} = \overrightarrow{a} +
+                            (-\overrightarrow{b}) = (a_{x} - b_{x}, a_{y} - b_{y})\) </p>
+
+                        <p> We now move into multiplication. Firstly, vectors can be multiplied by a
+                            <u><b>scalar</b></u> quantity, which we will define as any real number. The effect is that
+                            the vector's magnitude is scaled by a factor of the scalar quantity. Moreover, if the scalar
+                            quantity is negative, the direction of the vector reverses. <br> <br> Let \(s\) be the
+                            scalar quantity:
+                        </p>
+                        <p style="text-align: center;"> \(s\overrightarrow{a} = (sa_{x}, sa_{y})\)</p>
+                        <p> There are two ways we can multiply two vectors together. The first way is calculating the
+                            <u><b>dot product</b></u> of two vectors. It's denoted as&nbsp \(\overrightarrow{a} \cdot
+                            \overrightarrow{b}\)&nbsp and it is a <b>scalar</b> quantity that essentially
+                            describes the "same-ness" of two vectors. There are multiple ways to compute the dot
+                            product (which is a <b>commutative</b> operation), but it's easier to calculate it using the
+                            components of the two vectors, especially
+                            since we are working in two dimensions.
+                        </p>
+                        <p style="text-align: center;"> \(\overrightarrow{a} \cdot \overrightarrow{b} = a_{x}b_{x} +
+                            a_{y}b_{y}\)</p>
+                        <p> It's also commonly defined as: </p>
+                        <p style="text-align: center;"> \(\overrightarrow{a} \cdot \overrightarrow{b} = ||a|| \times
+                            ||b||cos(\theta )\)</p>
+                        <p> Where \(\theta\) is the angle between the two vectors. Although this definition is uglier to
+                            implement in code, it can be used to find the angle between two vectors. </p>
+                        <p style="text-align: center;"> \(||a||\times ||b||cos(\theta ) = a_{x}b_{x} +
+                            a_{y}b_{y}\)<br><br>\(cos(\theta ) = \frac{a_{x}b_{x} + a_{y}b_{y}}{||a||\times ||b||}\)
+                            <br><br> \(\theta = cos^{-1}(\frac{a_{x}b_{x} + a_{y}b_{y}}{||a||\times ||b||})\)
+                        </p>
+                    </div>
+
+                    <!--<h2 class="section-heading">Contact Detection</h2> -->
+                </div>
+            </div>
+        </div>
+    </article>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>
