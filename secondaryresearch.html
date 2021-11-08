@@ -189,7 +189,7 @@ while endpoint != X:
                             \(P_{i+1}\) such that all the points excluding \(P_{i}\) and \(P_{i+1}\) in \(S\) are to the
                             right of the line formed between \(P_{i}\) and \(P_{i+1}\). Let the leftmost point in \(S\)
                             be \(L\). Since \(L\) <b>must</b> be included in the convex hull, \(P_{0} = L\), and the
-                            convex hull is built clockwise, terminating when \(P_{i+1} = P_{0}\). The worst case is when
+                            convex hull is built clockwise, terminating when \(P_{i+1} = P_{0}\). <br><br>The worst case is when
                             the convex hull contains \(N\) vertices, and since we loop through all the points in \(S\)
                             (note \(|S| = N\)) for every vertex of the hull, our time complexity is \(O(N^{2})\).
                         </p>
