@@ -143,8 +143,58 @@
                             <br><br> \(\theta = cos^{-1}(\frac{a_{x}b_{x} + a_{y}b_{y}}{||a||\times ||b||})\)
                         </p>
                     </div>
+                    <div>
+                        <h2 class="section-heading">Contact Detection</h2>
+                        <p> There's a lot to unpack here. First, I'll cover the fundamental algorithms required for this
+                            stage of the physics engine and then optimizations that enable better performance. </p>
+                        <p> <u><b>Representing Objects</b></u> </p>
+                        <p> To determine if two shapes intersect in our physics engine, we must understand how to
+                            represent them. </p>
+                        <img class="img-fluid" src="assets/img/convexvsconcave.jpg" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p> Shapes can either be <b>convex</b> or <b>concave</b>. In a convex shape, a line segment
+                            connecting any two points within the shape is always fully contained inside the shape.
+                            Conversely, inside a concave shape, this statement is untrue. Convex shapes are much easier
+                            to work with, and there are many distance/intersection algorithms that we can implement for
+                            them. Consequently, it's desired that we represent all concave objects with a convex shape.
+                            Thus,
+                            we arrive at the famous convex hull problem. <br> <br>
+                            <b> Convex Hull Problem </b> <br> <br>
+                            The convex hull problem is defined as finding the smallest <b>convex</b> polygon that
+                            encloses all the points in a set.
+                        </p>
+                        <img class="img-fluid" src="assets/img/convex_hull.png" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p> The convex hull of the points given in \(a\) is shown in diagram \(b\). This algorithm can
+                            then be used on any concave shape in our physics engine - each vertex is a distinct point,
+                            and the convex hull is the convex representation of the object. Since optimization is not a
+                            priority yet, we'll first detail an \(O(N^{2})\) algorithm to compute the convex hull, where
+                            \(N\) is the number of vertices in the shape. </p>
+                        <img class="img-fluid" src="assets/img/giftwrapping.gif" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p> Let \(S\) be the set of vertices of the shape. The <b>Jarvis march</b> algorithm, animated
+                            above, starts at the leftmost point in \(S\), since the convex hull <b>must</b> include this
+                            point. Then, we iterate as follows: </p>
+                        <p>
+                        <pre><code>X = leftmost point in S
+while endpoint != X:
+    Add X to the hull
+    bestPoint := S[0]
+    for p := each point in S:
+        if p is on the left of the line formed from X to bestPoint:
+            bestPoint = p 
+    X = bestPoint</code></pre>
+                        </p>
+                        <p> If we are at a point on our convex hull \(P_{i}\), we select the next point
+                            \(P_{i+1}\) such that all the points excluding \(P_{i}\) and \(P_{i+1}\) in \(S\) are to the
+                            right of the line formed between \(P_{i}\) and \(P_{i+1}\). Let the leftmost point in \(S\)
+                            be \(L\). Since \(L\) <b>must</b> be included in the convex hull, \(P_{0} = L\), and the
+                            convex hull is built clockwise, terminating when \(P_{i+1} = P_{0}\). The worst case is when
+                            the convex hull contains \(N\) vertices, and since we loop through all the points in \(S\)
+                            (note \(|S| = N\)) for every vertex of the hull, our time complexity is \(O(N^{2})\).
+                        </p>
+                    </div>
 
-                    <!--<h2 class="section-heading">Contact Detection</h2> -->
                 </div>
             </div>
         </div>
