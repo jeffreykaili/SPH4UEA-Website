@@ -177,7 +177,7 @@
                             point. Then, we iterate as follows: </p>
                         <p>
                         <pre><code>X = leftmost point in S
-while endpoint != X:
+while bestPoint != leftmost point in S:
     Add X to the hull
     bestPoint := S[0]
     for p := each point in S:
@@ -189,10 +189,23 @@ while endpoint != X:
                             \(P_{i+1}\) such that all the points excluding \(P_{i}\) and \(P_{i+1}\) in \(S\) are to the
                             right of the line formed between \(P_{i}\) and \(P_{i+1}\). Let the leftmost point in \(S\)
                             be \(L\). Since \(L\) <b>must</b> be included in the convex hull, \(P_{0} = L\), and the
-                            convex hull is built clockwise, terminating when \(P_{i+1} = P_{0}\). <br><br>The worst case is when
+                            convex hull is built clockwise, terminating when \(P_{i+1} = P_{0}\). <br><br>The worst case
+                            is when
                             the convex hull contains \(N\) vertices, and since we loop through all the points in \(S\)
                             (note \(|S| = N\)) for every vertex of the hull, our time complexity is \(O(N^{2})\).
                         </p>
+                        <p> The most obvious flaw is that when we approximate a concave shape with a convex shape, the
+                            original body loses its concave properties. Usually, this is not a problem, but there are
+                            situations where the concave properties are important to the behaviour of an object (such as
+                            a cup). For these scenarios, we can use <b>convex decomposition</b>, a method where we
+                            represent a
+                            concave object as a set of convex shapes. </p>
+
+                        <p> <u><b>Testing for Intersections</b></u> </p>
+                        <p> Now that we can represent objects, we must test whether two convex polygons intersect. To
+                            achieve this, we can use the <b>Separating Axis Theorem</b> (SAT), which states that two objects do
+                            not overlap if there exists a line (called axis) onto which both the object's projections do
+                            not intersect. </p>
                     </div>
 
                 </div>
