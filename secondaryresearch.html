@@ -203,9 +203,70 @@ while bestPoint != leftmost point in S:
 
                         <p> <u><b>Testing for Intersections</b></u> </p>
                         <p> Now that we can represent objects, we must test whether two convex polygons intersect. To
-                            achieve this, we can use the <b>Separating Axis Theorem</b> (SAT), which states that two objects do
+                            achieve this, we can use the <b>Separating Axis Theorem</b> (SAT), which states that two
+                            objects do
                             not overlap if there exists a line (called axis) onto which both the object's projections do
-                            not intersect. </p>
+                            not intersect. <br><br>It can be shown that this line must be parallel to one of the sides
+                            of the
+                            polygon, and so, we can use the following algorithm:
+                        <ol>
+                            <li>
+                                Calculate the perpendicular vectors for the edges of each polygon. <br><br>
+                                <img class="img-fluid" src="assets/img/sat1.png" alt="..."
+                                    style="display: block; margin: 0 auto;" />
+                                <br>
+                            </li>
+                            <li> Project each vertex of the two polygons onto each perpendicular vector. <br><br>
+                                <ul>
+                                    <li> <img class="img-fluid" src="assets/img/sat2.png" alt="..."
+                                            style="display: block; margin: 0 auto;" />
+                                        For each polygon on a perpendicular vector, we take the highest and lowest
+                                        point of the vertex projections to calculate each polygon's projection. </li>
+                                </ul>
+                                <br>
+                            </li>
+                            <li>
+                                Finally, we check the projections overlap. If there exists a perpendicular vector in
+                                which the two projections <b>do not</b> overlap, the two objects are not
+                                intersecting.<br><br>
+                                <img class="img-fluid" src="assets/img/sat3.png" alt="..."
+                                    style="display: block; margin: 0 auto;" />
+                            </li>
+                        </ol>
+                        </p>
+                        <p>
+                            To implement this into code, we need a more rigorous procedure. Here is a well-defined
+                            mathematical approach that should assist with programming the detection.
+                        <ol>
+                            <li> For the first step, we need to review some vector math. Firstly, the vertices of our
+                                object will be represented with coordinates, so we need to find out how to calculate a
+                                vector based on two coordinates. Let \(c_{1}\) be the first vertex, \(c_{2}\) be the
+                                second vertex.
+                                <p style="text-align: center;"> \(\overrightarrow{v_{c_{1}c_{2}}} = c_{2} - c_{1} =
+                                    (c_{2_{x}} - c_{1_{x}}, c_{2_{y}} - c_{1_{y}})\)</p>
+
+                                Next, to calculate a
+                                <b>perpendicular</b> vector, we swap the \(x\) and \(y\) components, and then negate the
+                                \(x\) component. More formally, given \(\overrightarrow{v} = (v_{x}, v_{y})\),
+                                <p style="text-align: center;"> \(\overrightarrow{v_{\perp}} = (-v_{y}, v_{x})\)</p>
+                            </li>
+                            <li>
+                                To calculate the projection of each vertex on the perpendicular vector, we use the dot
+                                product. Essentially, if \(v_{\perp}\) is our perpendicular vector, we calculate
+                                \(\overrightarrow{v} \cdot e_{i}\), where \(e_{i}\) is each edge inside our polygon.
+                                Then, we take the minimum and maximum of the projected points, representing our
+                                polygon's projection.
+                                <img class="img-fluid" src="assets/img/projection.png" alt="..."
+                                    style="display: block; margin: 0 auto;" /><br>
+                            </li>
+                            <li>Finally, we can check if these projections are overlapping. If they are not overlapping,
+                                the two polygons are not intersecting. Otherwise, we check the other perpendicular
+                                vectors. </li>
+                        </ol>
+                        </p>
+                        <p> The Separating Axis Theorem is quite excessive if we are working with basic shapes. As a
+                            remedy, we can use custom functions to detect collisions when working with specific shapes,
+                            such as circles or rectangles. </p>
                     </div>
 
                 </div>
