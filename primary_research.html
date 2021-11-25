@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>SPH4UE-A</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+        rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">Physics Personal Project</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/selection.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="post-heading">
+                        <h1>Primary Research (Process)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted on November 22, 2021
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Post Content-->
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-xl-10 col-xl-8 col-xl-7">
+                    <p>To start, I created a 2D vector class that will be heavily used around the engine:</p>
+                    <script src="https://gist.github.com/jeffreykaili/a52383b3ee6776e37252430b2850f970.js"></script>
+                    <p>It supports basic vector operations as outlined in the secondary research. Next, I created a
+                        bunch of primitives, or basic shapes that will be used around the engine, such as particles,
+                        circles, and axis-aligned rectangles. An example of one of these primitives is the axis-aligned
+                        bounding box (rectangle): </p>
+                    <script src="https://gist.github.com/jeffreykaili/c8f64d3d0d91f39c5fbc2c50a16dfeea.js"></script>
+                    <p>Notice the first appearance of a collision detection function - it's relatively easy for two
+                        axis-aligned rectangles. However, even with this introductory class, we can create an elementary
+                        simulation, where we'll place two rectangles with some velocity and change their colour if they
+                        intersect.</p>
+                    <iframe width="100%" height="600px" src="https://www.youtube.com/embed/642GO1PiQsk"></iframe>
+                    <p> It's a start, but nothing too fancy. To continue, we need to figure out how to resolve
+                        collisions. First, we'll create another class that contains the information we need, such as
+                        mass, velocity, and restitution. Then, we'll implement the below equation derived in the
+                        secondary research to calculate impulse: </p>
+                    <p style="text-align: center; font-size: 32px;"> \(p = \frac{-(1 + e)((\overrightarrow{v_{B}} -
+                        \overrightarrow{v_{A}}) \cdot \overrightarrow{n})}{\frac{1}{m_{A}} + \frac{1}{m_{B}}} \cdot
+                        \overrightarrow{n}\)</p>
+                    <p> where \(e\) is the minimum restitution of the two colliding objects, \(m_{a}\) and \(m_{b}\) are
+                        their masses, \(\overrightarrow{v_{A}}\) and \(\overrightarrow{v_{B}}\) are their velocity
+                        vectors, and \(\overrightarrow{n}\) is the normalized orthogonal vector of the collision.
+                        Translating this inside our code: </p>
+                    <script src="https://gist.github.com/jeffreykaili/cdfbd1441fe83b57efbb827ee5199efb.js"></script>
+                    <p> This snippet of code works in two dimensions, so we can resolve collisions where the rectangles
+                        are not axis-aligned as well. However, we haven't implemented rotation in our rectangle class
+                        yet,
+                        so let's test this with axis-aligned rectangles first. Although velocity and mass are not
+                        indicated, the two boxes have identical mass with velocities that are equal in magnitude but
+                        opposite in direction. Moreover, these collisions are completely elastic. </p>
+                    <iframe width="100%" height="600px" src="https://www.youtube.com/embed/PUIzXmww3Bc"></iframe>
+                    <p> And the same scenario, except the right box has twice the velocity.</p>
+                    <iframe width="100%" height="600px" src="https://www.youtube.com/embed/Rlw91OCGJTg"></iframe>
+                    <p> Of course, we can extend this to systems including multiple boxes. The boxes below have varying
+                        masses and initial velocities. </p>
+                    <iframe width="100%" height="600px" src="https://www.youtube.com/embed/irSIB_O9SPQ"></iframe>
+                    <p> Time to add rotation! We can no longer use the axis-aligned bounding box collision detection, so
+                        we'll use the separating axis theorem instead. First, we use these two functions to generate the
+                        edges and vertices of our shape: </p>
+                    <script src="https://gist.github.com/jeffreykaili/642ffc991e602a3acdfb2e85ff705e12.js"></script>
+                    <p> Then, implement the SAT: </p>
+                    <script src="https://gist.github.com/jeffreykaili/7ce1c6295731d02fdb6434655f26ef5f.js"></script>
+                    <p> After giving our rigid body rectangle class an angle property and adjusting the necessary code, we can detect and resolve collisions for rectangles that are not axis-aligned. For now, the rotation of the rectangle is locked. </p>
+                    <iframe width="100%" height="600px" src="https://www.youtube.com/embed/iSww9DdFBrQ"></iframe>
+                    <p> That's where I'm at for now - next, I'll implement torque so the rectangles can actually rotate :) </p>
+                </div>
+            </div>
+        </div>
+    </article>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+
+</body>
+
+</html>
