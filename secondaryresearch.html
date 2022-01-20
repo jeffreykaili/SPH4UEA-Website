@@ -62,12 +62,11 @@
                 <div class="col-xl-10 col-xl-8 col-xl-7">
 
                     <div>
-                        <p> Roughly speaking, there are four stages that our engine loops through to simulate
+                        <p> Roughly speaking, there are three stages that our engine loops through to simulate
                             two-dimensional physics. The procedure is as follows: </p>
                         <ol>
                             <li> Contact Detection </li>
                             <li> Contact Resolution </li>
-                            <li> Force Computation </li>
                             <li> State Integration </li>
                         </ol>
                         <p> Then, each frame of our physics engine renders the updated results. We will dive further
@@ -267,14 +266,52 @@ while bestPoint != leftmost point in S:
                         <p> The Separating Axis Theorem is quite excessive if we are working with basic shapes. As a
                             remedy, we can use custom functions to detect collisions when working with specific shapes,
                             such as circles or rectangles. </p>
+                        <p> If we detect a collision, we will extract two pieces of information — a collision normal
+                            vector and a collison depth scalar value. </p>
+                        <img class="img-fluid" src="assets/img/collide.png" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p> The collision normal vector is a <b>normalized</b> (unit) vector that tells us the direction
+                            in which the two shapes have collided and the collision depth is a scalar value that tells
+                            us how far the two bodies have already overlapped. With that, we can forward this
+                            information to the next stage of our engine.
+                        </p>
                     </div>
-                    <div> 
+                    <div>
                         <h2 class="section-heading">Contact Resolution</h2>
-
+                        <p> When resolving a collision, we want to consider a variety of factors such as the direction
+                            and depth of the collision and any properties of the two objects, such as their mass,
+                            orientation, and velocity. In addition, to simulate realistic physics, two intersecting
+                            objects should be separated by the next frame.
+                        </p>
+                        <p> We can take a variety of approaches, but one way is to mimic the real world and apply
+                            impulses to both colliding bodies to change their velocities. Remember, impulse is defined
+                            as a <b>change in momentum</b>, and is equal to \(m \Delta \vec{v}\), so if we calculate the
+                            impulse, we can isolate for \(\Delta \vec{v}\text{ }\) to calculate an object's change in
+                            velocity after a collision. </p>
+                        <iframe width="100%" height="600px" src="https://www.youtube.com/embed/tTt886y0rWI"></iframe>
+                        <p> This method is also grounded in reality. When two objects contact in real life, they
+                            experience a force over some time (\(\vec{F} \Delta t\)), which is impulse. Let's call the
+                            two colliding objects
+                            \(A\) and \(B\).</p>
+                        <p> The first step is to calculate the relative velocity between the colliding objects. </p>
+                        <p style="text-align: center;"> \(\vec{v}_{r} = \vec{v}_B - \vec{v}_A\)</p>
+                        <p> This equation determines the relative velocity of \(B\) with respect to \(A\). The relative
+                            velocity is important because regardless of the velocity of both objects, if two scenarios
+                            have the same relative velocity, the response to the collision should be indentical. That
+                            is, whether
+                            the objects are moving at \(2m/s\) and \(4m/s\) or \(8m/s\) and \(10m/s\), the change in
+                            velocity of the slower objects in both scenarios should be the same, and the change in
+                            velocity of the faster objects in both scenarios should also be the same. <a
+                                href="https://www.physicsclassroom.com/Physics-Interactives/Momentum-and-Collisions/Collision-Carts/Collision-Carts-Interactive"
+                                target=_blank>Here's</a> a
+                            nice interactive that demonstrates this idea. </p>
+                        <p> Since we only care about the relative velocity that is in the direction of the collision,
+                            we'll calculate the dot product with our collision normal vector. </p>
+                        <p style="text-align: center;"> \(\vec{v}_{r} = (\vec{v}_B - \vec{v}_A) \cdot \vec{n}\)</p>
+                        <p> Next, let's think about the type of collisions that can occur. </p>
                     </div>
                 </div>
             </div>
-        </div>
     </article>
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
