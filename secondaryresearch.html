@@ -308,7 +308,116 @@ while bestPoint != leftmost point in S:
                         <p> Since we only care about the relative velocity that is in the direction of the collision,
                             we'll calculate the dot product with our collision normal vector. </p>
                         <p style="text-align: center;"> \(\vec{v}_{r} = (\vec{v}_B - \vec{v}_A) \cdot \vec{n}\)</p>
-                        <p> Next, let's think about the type of collisions that can occur. </p>
+                        <p> Next, let's think about the types of collisions that can occur. It should be pretty clear
+                            that <b>what</b> the two objects are made of will impact the response to the
+                            collision. For example, imagine dropping a marble and a rubber ball with equal masses
+                            onto the floor — you'd expect the rubber ball to bounce much higher. The ratio of the final
+                            relative velocity to the initial relative velocity between two objects after their collision
+                            is known as the coefficient of restitution, and it represents the conversion of kinetic
+                            energy to heat energy. Let \(\overrightarrow{RV_{i}}\) be the initial relative velocity and
+                            \(\overrightarrow{RV_{f}}\) be the final relative velocity. The coefficient of restitution,
+                            denoted with the symbol \(e\) is then: </p>
+                        <p style="text-align: center; font-size: 26px;">
+                            \(e=\frac{|\overrightarrow{RV_{f}}|}{|\overrightarrow{RV_{i}}|}\)</p>
+                        <p> So, \(e = 1\) represents a perfectly elastic collision where <b>no kinetic energy is
+                                lost</b>, and \(e = 0\) represents a perfectly inelastic collision, where the objects
+                            fuse together
+                            and <b>maximum kinetic energy is lost.</b> Consequently, it would make sense if \(0 \leq e
+                            \leq 1\), but technically \(e > 1\) can occur if the objects <b>gain</b> kinetic energy
+                            (possible in some cases). However, we won't deal with those rare cases. When \(e \in (0,
+                            1)\), the collision is <b>inelastic</b>, and some kinetic energy is converted to heat. In
+                            essence, we want our collision response between two steel balls to be different than the
+                            collision response between two rubber balls. </p>
+                        <p> Our end goal is to calculate the impulse scalar (\(J\)), which we can dot product with our
+                            collision
+                            normal to get the impulse. So, building off our relative velocity, we'll multiply it with
+                            \((1 + e)\) to account for the coefficient of restitution. </p>
+                        <p style="text-align: center;"> \(J = (1 + e)(\vec{v}_B - \vec{v}_A) \cdot \vec{n}\)</p>
+                        <p> From the real world and Newton's third law, the collision should point the objects in the
+                            opposite direction, so we will add a negative sign to our equation.</p>
+                        <p style="text-align: center;"> \(J = -(1 + e)(\vec{v}_B - \vec{v}_A) \cdot \vec{n}\)</p>
+                        <p> This current equation is fine, but we haven't considered the masses of the two objects. From
+                            the Conservation of Momentum, the total momentum before and after the collision should be
+                            identical. The easiest way to conserve momentum is to divide our current value of \(J\) by
+                            the sum of the inverse masses of the objects. </p>
+                        <p style="text-align: center; font-size: 28px;"> \(J = \frac{-(1 + e)(\vec{v}_B - \vec{v}_A)
+                            \cdot \vec{n}}{m_{A}^{-1} + m_{B}^{-1}}\)</p>
+                        <p> To explain why this works, let's quickly discuss how we'll use the impulse to calculate each
+                            object's change in velocity. </p>
+                        <p style="text-align: center; font-size: 26px;"> \(\vec{J} = m \Delta v \rightarrow \Delta v =
+                            \frac{\vec{J}}{m}\)</p>
+                        <p> So, the change in velocity is equal to the impulse vector divided by an object's mass. Thus,
+                            when we divide our velocity by the sum of the inverse masses, it scales the impulse so that
+                            each object gets the correct proportion of the total energy/momentum of the entire
+                            collision. Finally, to get the impulse, we'll multiply this \(J\) value by our collision
+                            normal vector. </p>
+                        <p style="text-align: center; font-size: 26px;"> \(\vec{J} = (\frac{-(1 + e)(\vec{v}_B -
+                            \vec{v}_A)
+                            \cdot \vec{n}}{m_{A}^{-1} + m_{B}^{-1}})\vec{n}\)</p>
+                        <p> Then, we just use our earlier equation to apply this impulse and calculate the change in
+                            velocity of both objects. Now, let's move on to adding angular components. </p>
+                        <p> The rotational equivalent of linear force is torque (\(\vec{\tau} \)).
+                            When calculating linear velocity, all the points within an object move at the same
+                            rate. Based on Newton's second law (\(F = ma\), the acceleration is dependent on the force
+                            acting upon an object and its <b>mass</b>. Logically, we might conclude that the amount of
+                            angular acceleration an object experiences is also dependent on torque and the object's
+                            mass. However, when we apply torque, we're changing angular velocity, moving the body such
+                            that
+                            the mass farther from its centre of mass moves <b>more</b> than mass closer to its centre of
+                            mass. </b></p>
+                        <p> So, the amount of angular acceleration an object experiences for a certain torque is based
+                            on "the moment of inertia," which describes the distribution of an object's mass around each
+                            axis and tells us how resistant this object is to rotation. Usually, we'd represent an
+                            object's moment of inertia using a special type of matrix known as a <b>tensor</b>. Each
+                            dimension in the tensor tells us about rotation along a certain axis, so if a body undergoes
+                            rotations about all three axes, we'd need a 3x3 matrix. </p>
+                        <img class="img-fluid" src="assets/img/tensorjpg.jpg" alt="..."
+                            style="display: block; margin: 0 auto;" />
+                        <p> Luckily, when we're working in two dimensions, <b>all rotations occur on the z-axis</b>.
+                            This means that our tensor is a 1x1 matrix or simply a scalar value! Now, we can use some
+                            established equations to calculate the moment of inertia for different shapes. </p>
+                        <p> For rectangles with mass \(m\), length \(l\), and width \(w\), the moment of inertia
+                            (\(I_{r}\)) is:</p>
+                        <p style="text-align: center; font-size: 24px;"> \(I_{r}=\frac{1}{12}(l^2+w^2)m\)</p>
+                        <p> For circles with mass \(m\) and radius \(r\), the moment of inertia
+                            (\(I_{c}\)) is:</p>
+                        <p style="text-align: center; font-size: 24px;"> \(I_{c}=\frac{1}{2}mr^2\)</p>
+                        <p> Now, we'll apply an <b>angular impulse</b> to change <b>angular velocity</b>, much like how
+                            we
+                            calculated a <b>linear impulse </b>to change <b>linear velocity</b>. </p>
+                        <p> Let \(\vec{r}\text{ }\) be the relative position of the collision point from the object's
+                            centre of
+                            mass. We apply the impulse to our current angular velocity \(av\): </p>
+                        <p style="text-align: center;"> \(av = av \pm I^{-1}(\vec{r} \times \vec{J})\)</p>
+                        <p> The plus-minus depends on which object we're applying the angular impulse to (since the
+                            impulses should point in opposite directions). Then, the combined impulse calculation is:
+                        </p>
+                        <p style="text-align: center; font-size: 32px;">
+                            \(\vec{J}=(\frac{-(1+e)(\vec{v}_{BA}\cdot\vec{n})}{m^{-1}_{A}+m^{-1}_{B}+(I_{A}^{-1}(r_A
+                            \times \vec{n})\times r_A+I^{-1}_{B}(r_B \times \vec{n})\times r_B)\cdot \vec{n}})\vec{n}\)
+                        </p>
+                        <p>It <em>looks</em> pretty gross, but it's combining a lot of different equations into one
+                            singular value. </p>
+                    </div>
+                    <div>
+                        <h2 class="section-heading">State Integration</h2>
+                        <p> Integration is the stage where we calculate an object's velocity and displacement to update
+                            its
+                            position. The easiest way is to simply implement some known physics equations. </p>
+                        <p> Let \(n\) be the current frame of our engine. First, we'll calculate the acceleration by
+                            dividing force by mass. </p>
+                        <p style="text-align: center; font-size: 26px;">
+                            \(\vec{a}_{n} = \frac{\vec{F}}{m}\)</p>
+                        <p> Then, use this acceleration to compute the new velocity: </p>
+                        <p style="text-align: center; font-size: 26px;">
+                            \(\vec{v}_{n+1} = \vec{v}_{n} + \vec{a}_{n} \Delta t\)</p>
+                        <p> And finally, compute the new position: </p>
+                        <p style="text-align: center; font-size: 26px;">
+                            \(\vec{p}_{n+1} = \vec{p}_{n} + \vec{v}_{n+1}\Delta t\)</p>
+                        <p> You might ask, what is the value of \(\Delta t\)? If we cap our physics engine at 60 frames
+                            per second, the \(\Delta t\) has a constant value of \(\frac{1}{60}\text{s}\). Obviously,
+                            this method is flawed if the simulation ever drops below 60 frames, but we won't worry about that
+                            for now. </p>
                     </div>
                 </div>
             </div>
